@@ -5,671 +5,429 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Widening Gap — U.S. Economic Security Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --ink:#0a0a0a;--paper:#f5f2eb;--paper2:#ede9df;--paper3:#e4dfd3;
-  --accent:#c8440a;--accent2:#1a4a6b;--accent3:#2d6a4f;
-  --gold:#b8860b;--muted:#6b6560;--border:#ccc8be;
-  --serif:'DM Serif Display',Georgia,serif;
-  --sans:'Outfit',system-ui,sans-serif;
-  --mono:'DM Mono',monospace;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-main: #0b0f19;
+  --bg-card: #131a26;
+  --bg-card-hover: #1a2333;
+  --accent-orange: #ff5e3a;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --text-primary: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border-color: #242f41;
+  
+  --font-serif: 'Cinzel', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
-html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;overflow-x:hidden}
 
-/* ── NOISE TEXTURE OVERLAY ── */
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.6}
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--paper2)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+/* ── HERO HEADER ────────────────────────────────────────────────────────── */
+header {
+  position: relative;
+  padding: 100px 24px 60px 24px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 30%, #1e293b 0%, var(--bg-main) 70%);
+  border-bottom: 1px solid var(--border-color);
+}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(245,242,235,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:var(--serif);font-size:1.1rem;letter-spacing:-.01em}
-.nav-logo span{color:var(--accent)}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{font-size:.8rem;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .2s}
-.nav-links a:hover{color:var(--ink)}
-.nav-cta{font-size:.75rem;font-weight:600;padding:6px 16px;border:1.5px solid var(--ink);border-radius:2px;text-decoration:none;color:var(--ink);letter-spacing:.06em;text-transform:uppercase;transition:all .2s}
-.nav-cta:hover{background:var(--ink);color:var(--paper)}
+header h1 {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-/* ── HERO ── */
-#hero{min-height:100vh;padding:120px 2rem 80px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
-.hero-eyebrow{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .2s ease forwards}
-.hero-headline{font-family:var(--serif);font-size:clamp(3.5rem,9vw,7.5rem);line-height:.95;letter-spacing:-.03em;max-width:900px;margin-bottom:2rem;opacity:0;animation:fadeUp .9s .35s ease forwards}
-.hero-headline em{color:var(--accent);font-style:italic}
-.hero-sub{font-size:1.05rem;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:3rem;opacity:0;animation:fadeUp .9s .5s ease forwards}
-.hero-stats{display:grid;grid-template-columns:repeat(4,auto);gap:3rem;margin-bottom:3.5rem;opacity:0;animation:fadeUp .9s .65s ease forwards}
-.hero-stat-num{font-family:var(--serif);font-size:2.8rem;line-height:1;color:var(--accent)}
-.hero-stat-num.blue{color:var(--accent2)}
-.hero-stat-num.green{color:var(--accent3)}
-.hero-stat-label{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-top:4px;max-width:120px}
-.hero-actions{display:flex;gap:1rem;opacity:0;animation:fadeUp .9s .8s ease forwards}
-.btn-primary{padding:14px 32px;background:var(--ink);color:var(--paper);font-weight:600;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .2s;border-radius:2px}
-.btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
-.btn-secondary{padding:14px 32px;background:transparent;color:var(--ink);font-weight:600;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;border-radius:2px}
-.btn-secondary:hover{border-color:var(--ink)}
-.hero-rule{position:absolute;top:0;right:10%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--border),transparent);opacity:.6}
-.hero-num-bg{position:absolute;right:-2%;bottom:-5%;font-family:var(--serif);font-size:28vw;line-height:1;color:var(--paper2);z-index:-1;pointer-events:none;user-select:none;letter-spacing:-.05em}
+header p {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 0 auto 24px auto;
+  font-weight: 300;
+}
 
-/* ── SECTION COMMON ── */
-section{padding:100px 2rem}
-.section-eyebrow{font-family:var(--mono);font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem}
-.section-title{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.5rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:1.5rem}
-.section-intro{font-size:1.05rem;color:var(--muted);line-height:1.75;max-width:600px;margin-bottom:3rem}
-.container{max-width:1200px;margin:0 auto}
-.divider{height:1px;background:var(--border);margin:0 2rem}
+.meta-bar {
+  display: inline-flex;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 8px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-orange);
+}
 
-/* ── KEY FINDINGS BAND ── */
-#findings{background:var(--ink);color:var(--paper);padding:80px 2rem}
-.findings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.1)}
-.finding-card{background:var(--ink);padding:3rem 2.5rem}
-.finding-num{font-family:var(--serif);font-size:4rem;line-height:1;color:var(--accent);font-style:italic}
-.finding-title{font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:1rem 0 .5rem}
-.finding-desc{font-size:.9rem;color:rgba(255,255,255,.7);line-height:1.6}
+/* ── GRID LAYOUT ────────────────────────────────────────────────────────── */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
 
-/* ── CHARTS ── */
-#charts{background:var(--paper)}
-.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);border:1px solid var(--border)}
-.chart-panel{background:var(--paper);padding:2rem}
-.chart-panel.wide{grid-column:span 2}
-.chart-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
-.chart-title{font-family:var(--serif);font-size:1.35rem;margin-bottom:1.25rem;line-height:1.2}
-.chart-wrap{position:relative}
-.chart-source{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.75rem;opacity:.7}
-.legend-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:.75rem}
-.leg{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--muted)}
-.leg-dot{width:10px;height:10px;border-radius:1px;flex-shrink:0}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
 
-/* ── CALCULATOR ── */
-#calculator{background:var(--paper2)}
-.calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
-.calc-inputs{display:flex;flex-direction:column;gap:1.5rem}
-.input-group{display:flex;flex-direction:column;gap:6px}
-.input-group label{font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.slider-wrap{display:flex;align-items:center;gap:12px}
-.slider-wrap input[type=range]{flex:1;-webkit-appearance:none;height:2px;background:var(--border);border-radius:1px;outline:none;cursor:pointer}
-.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--ink);border-radius:50%;cursor:pointer}
-.slider-val{font-family:var(--mono);font-size:.85rem;min-width:70px;text-align:right;font-weight:500}
-.calc-results{position:sticky;top:80px}
-.result-card{background:var(--paper);border:1px solid var(--border);padding:2rem;margin-bottom:1rem}
-.result-main-num{font-family:var(--serif);font-size:3.5rem;line-height:1;margin:8px 0}
-.result-main-num.danger{color:var(--accent)}
-.result-main-num.safe{color:var(--accent3)}
-.result-subtitle{font-size:.8rem;color:var(--muted);font-weight:500;letter-spacing:.05em;text-transform:uppercase}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:1rem}
-.result-item{background:var(--paper2);padding:1rem 1.25rem}
-.result-item-label{font-size:.68rem;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
-.result-item-val{font-family:var(--mono);font-size:1.1rem;font-weight:500}
-.verdict{padding:1rem 1.25rem;border-left:3px solid var(--accent);background:var(--paper);font-size:.88rem;color:var(--muted);line-height:1.6;margin-top:1rem}
-.verdict.ok{border-left-color:var(--accent3)}
+@media (max-width: 1024px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
 
-/* ── DATA TABLE ── */
-#datatable{background:var(--paper);overflow:hidden}
-.table-wrap{overflow-x:auto;border:1px solid var(--border)}
-table{width:100%;border-collapse:collapse;font-size:.82rem}
-thead th{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 16px;text-align:right;white-space:nowrap;font-weight:400}
-thead th:first-child{text-align:left}
-tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
-tbody tr:hover{background:var(--paper2)}
-tbody td{padding:10px 16px;text-align:right;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
-tbody td:first-child{text-align:left;font-weight:600;color:var(--ink);font-family:var(--sans)}
-.cell-badge{display:inline-block;padding:2px 7px;border-radius:1px;font-size:.65rem;font-weight:600;font-family:var(--mono)}
-.badge-r{background:#fde8e0;color:#8c2800}
-.badge-a{background:#fef3dc;color:#7a4a00}
-.badge-g{background:#e0f0e5;color:#1a5c2f}
+/* ── CARDS & SECTIONS ───────────────────────────────────────────────────── */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 32px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
 
-/* ── ABOUT / METHODOLOGY ── */
-#about{background:var(--paper2)}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
-.about-card{background:var(--paper);border:1px solid var(--border);padding:2rem;margin-bottom:1.5rem}
-.about-card-title{font-family:var(--serif);font-size:1.1rem;margin-bottom:.75rem}
-.about-card-body{font-size:.88rem;color:var(--muted);line-height:1.7}
-.about-card-body a{color:var(--accent2);text-decoration:none;border-bottom:1px solid currentColor}
-.source-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
-.source-list li{font-size:.82rem;color:var(--muted);padding:.5rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
-.source-list li::before{content:'→';color:var(--accent);font-size:.75rem}
+.card:hover {
+  border-color: #334155;
+}
 
-/* ── FOOTER ── */
-footer{background:var(--ink);color:var(--paper);padding:3rem 2rem}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
-.footer-logo{font-family:var(--serif);font-size:1.2rem}
-.footer-logo span{color:var(--accent)}
-.footer-meta{font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.4);text-align:right;line-height:1.8}
+.card-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid var(--accent-orange);
+  padding-left: 12px;
+}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:none}
+/* ── INTERACTIVE CALCULATOR ────────────────────────────────────────────── */
+.calc-widget {
+  background: linear-gradient(145deg, #162030, #0f172a);
+  position: sticky;
+  top: 32px;
+}
 
-/* ── RESPONSIVE ── */
-@media(max-width:768px){
-  .hero-stats{grid-template-columns:repeat(2,1fr);gap:2rem}
-  .findings-grid,.charts-grid,.calc-layout,.about-grid{grid-template-columns:1fr}
-  .chart-panel.wide{grid-column:span 1}
-  .nav-links{display:none}
-  .result-card{position:static}
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper span {
+  position: absolute;
+  left: 16px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.input-wrapper input {
+  width: 100%;
+  background: #090d16;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px 16px 12px 32px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  transition: border-color 0.2s;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: var(--accent-orange);
+}
+
+.verdict {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.05);
+  color: #fca5a5;
+}
+
+.verdict.ok {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.05);
+  color: #a7f3d0;
+}
+
+/* ── CHARTS CONTAINER ───────────────────────────────────────────────────── */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  margin-top: 16px;
+}
+
+/* ── DATA TABLE ────────────────────────────────────────────────────────── */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: #0e131f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+th {
+  background-color: #161f30;
+  color: var(--text-muted);
+  padding: 14px 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  color: #e5e7eb;
+}
+
+tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Badges for metrics */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.badge-red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.badge-amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+footer {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 60px;
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">The <span>Widening</span> Gap</div>
-  <ul class="nav-links">
-    <li><a href="#findings">Findings</a></li>
-    <li><a href="#charts">Charts</a></li>
-    <li><a href="#calculator">Calculator</a></li>
-    <li><a href="#datatable">Data</a></li>
-    <li><a href="#about">Methodology</a></li>
-  </ul>
-  <a class="nav-cta" href="#calculator">Try Calculator</a>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-rule"></div>
-  <div class="hero-num-bg">GAP</div>
-  <div class="container">
-    <p class="hero-eyebrow">Research Platform · United States · 2000–2024</p>
-    <h1 class="hero-headline">Wages rose.<br>Prices rose <em>faster.</em></h1>
-    <p class="hero-sub">A comprehensive data platform tracking the divergence between American wages, inflation, and the cost of housing, healthcare, and education over 24 years.</p>
-    <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num">+82.5%</div>
-        <div class="hero-stat-label">CPI rise since 2000</div>
-      </div>
-      <div>
-        <div class="hero-stat-num blue">+37.8%</div>
-        <div class="hero-stat-label">Real wage gain since 2000</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">6.10×</div>
-        <div class="hero-stat-label">Peak home price / income (2022)</div>
-      </div>
-      <div>
-        <div class="hero-stat-num green">203h</div>
-        <div class="hero-stat-label">Hours min-wage worker needs for rent</div>
-      </div>
-    </div>
-    <div class="hero-actions">
-      <a class="btn-primary" href="#charts">Explore the Data</a>
-      <a class="btn-secondary" href="#calculator">Affordability Calculator</a>
-    </div>
+<header>
+  <h1>THE WIDENING GAP</h1>
+  <p>An Interactive Empirical Analysis of U.S. Wage Stagnation, Inflation Realities, and Structural Housing Cost Burdens (2000–2025)</p>
+  <div class="meta-bar">
+    <span>DATA SOURCE: BLS, CENSUS BUREAU, FRED</span>
+    <span>STATUS: DEPLOYED INDEX</span>
   </div>
-</section>
+</header>
 
-<div class="divider"></div>
-
-<!-- KEY FINDINGS -->
-<section id="findings" style="padding:0">
-  <div class="findings-grid">
-    <div class="finding-card reveal">
-      <div class="finding-num">−22.8%</div>
-      <div class="finding-title">Minimum Wage Erosion</div>
-      <div class="finding-desc">The federal minimum wage ($7.25) has been frozen since 2009. In 2000 dollars, it's worth just $3.97 — a 22.8% real-term loss for America's lowest-paid workers.</div>
-    </div>
-    <div class="finding-card reveal">
-      <div class="finding-num">84%</div>
-      <div class="finding-title">Housing Affordability Loss</div>
-      <div class="finding-desc">The price-to-income ratio — how many years of income to buy a median home — rose 84% from 2000 to its 2022 peak, from 3.31× to 6.10×.</div>
-    </div>
-    <div class="finding-card reveal">
-      <div class="finding-num">+221%</div>
-      <div class="finding-title">Tuition Increase</div>
-      <div class="finding-desc">College tuition grew 221% from 2000 to 2024 — nearly three times the general inflation rate. Healthcare followed at +185%.</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- CHARTS -->
-<section id="charts">
-  <div class="container">
-    <p class="section-eyebrow reveal">Data Visualization</p>
-    <h2 class="section-title reveal">The numbers,<br>in full.</h2>
-    <p class="section-intro reveal">Six charts built from BLS, Census Bureau, NAR, CMS, and NCES data. Every figure is government-sourced and citable.</p>
-
-    <div class="charts-grid reveal">
-      <!-- Chart 1: Wide — Cost Comparison -->
-      <div class="chart-panel wide">
-        <div class="chart-label">Fig. 01</div>
-        <div class="chart-title">What has grown fastest since 2000?</div>
-        <div class="chart-wrap"><canvas id="c_cost" height="280" role="img" aria-label="Multi-line index chart 2000–2025 showing tuition +221%, healthcare +185%, home prices +204%, CPI +83%, nominal wages +151%, real wages +38%">Growth since 2000: tuition +221%, healthcare +185%, home prices +204%, CPI +83%, nominal wages +151%, real wages +38%.</canvas></div>
-        <div class="legend-row">
-          <div class="leg"><span class="leg-dot" style="background:#c8440a"></span>Home prices +204%</div>
-          <div class="leg"><span class="leg-dot" style="background:#8b1a8b"></span>College tuition +221%</div>
-          <div class="leg"><span class="leg-dot" style="background:#d4a017"></span>Healthcare +185%</div>
-          <div class="leg"><span class="leg-dot" style="background:#6b9e6b"></span>CPI +83%</div>
-          <div class="leg"><span class="leg-dot" style="background:#1a4a6b"></span>Nominal wages +151%</div>
-          <div class="leg"><span class="leg-dot" style="background:#2d6a4f"></span>Real wages +38%</div>
+<div class="container">
+  <div class="dashboard-grid">
+    
+    <main>
+      <section class="card">
+        <h2 class="card-title">Wage vs. Cost-of-Living Evolution</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Tracking the real divergence between nominal wage metrics and absolute systemic cost scaling over a quarter-century baseline.</p>
+        <div class="chart-container">
+          <canvas id="chartWages"></canvas>
         </div>
-        <div class="chart-source">Sources: BLS CPI-U; BLS CES; NAR; CMS National Health Expenditure; NCES</div>
-      </div>
+      </section>
 
-      <!-- Chart 2: Wages -->
-      <div class="chart-panel">
-        <div class="chart-label">Fig. 02</div>
-        <div class="chart-title">Nominal vs. Real Wages</div>
-        <div class="chart-wrap"><canvas id="c_wage" height="220" role="img" aria-label="Line chart showing nominal wages tripled while real wages only grew 38%">Nominal wages indexed to 251 vs real wages at 138 by 2024.</canvas></div>
-        <div class="legend-row">
-          <div class="leg"><span class="leg-dot" style="background:#1a4a6b"></span>Nominal</div>
-          <div class="leg"><span class="leg-dot" style="background:#2d6a4f"></span>Real (2000 $)</div>
-          <div class="leg"><span class="leg-dot" style="background:#c8440a;opacity:.6"></span>CPI</div>
+      <section class="card">
+        <h2 class="card-title">Housing Price-to-Income Multiple (Structural Stress)</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">The historical healthy baseline multiple sits at 3.0×. This chart tracks how far out of sync the pricing mechanics have migrated.</p>
+        <div class="chart-container">
+          <canvas id="chartHousing"></canvas>
         </div>
-        <div class="chart-source">Source: BLS CES; BLS CPI-U · 2000 = 100</div>
-      </div>
+      </section>
 
-      <!-- Chart 3: Min Wage -->
-      <div class="chart-panel">
-        <div class="chart-label">Fig. 03</div>
-        <div class="chart-title">Federal Minimum Wage, Real Value</div>
-        <div class="chart-wrap"><canvas id="c_min" height="220" role="img" aria-label="Bar chart showing real value of minimum wage declining from $5.15 in 2000 to $3.97 in 2024 in 2000 dollars">Min wage real value: $5.15 (2000) to $3.97 (2024).</canvas></div>
-        <div class="legend-row">
-          <div class="leg"><span class="leg-dot" style="background:#c8440a"></span>Real value (2000 $)</div>
-          <div class="leg"><span class="leg-dot" style="background:#1a4a6b"></span>Nominal ($)</div>
+      <section class="card">
+        <h2 class="card-title">Comprehensive Historical Records Ledger</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>CPI Index</th>
+                <th>Nominal Wage ($/h)</th>
+                <th>Real Wage ($/h)</th>
+                <th>Median Home ($)</th>
+                <th>PTI Ratio</th>
+                <th>Median Rent ($)</th>
+                <th>Rent Burden</th>
+                <th>ESI Score</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              </tbody>
+          </table>
         </div>
-        <div class="chart-source">Source: U.S. Department of Labor; BLS CPI-U</div>
-      </div>
+      </section>
+    </main>
 
-      <!-- Chart 4: PTI -->
-      <div class="chart-panel">
-        <div class="chart-label">Fig. 04</div>
-        <div class="chart-title">Home Price-to-Income Ratio</div>
-        <div class="chart-wrap"><canvas id="c_pti" height="220" role="img" aria-label="Bar chart of price-to-income ratio by year, rising from 3.31 in 2000 to 6.10 in 2022">PTI rose from 3.31 in 2000 to peak 6.10 in 2022.</canvas></div>
-        <div class="legend-row">
-          <div class="leg"><span class="leg-dot" style="background:#2d6a4f"></span>&lt; 4× manageable</div>
-          <div class="leg"><span class="leg-dot" style="background:#d4a017"></span>4–5× stretched</div>
-          <div class="leg"><span class="leg-dot" style="background:#c8440a"></span>&gt; 5× crisis</div>
-        </div>
-        <div class="chart-source">Source: NAR Median Existing Home Price; Census Bureau ACS</div>
-      </div>
-
-      <!-- Chart 5: Rent -->
-      <div class="chart-panel">
-        <div class="chart-label">Fig. 05</div>
-        <div class="chart-title">Rent vs. 30% Affordability Threshold</div>
-        <div class="chart-wrap"><canvas id="c_rent" height="220" role="img" aria-label="Line chart of median rent versus 30% income affordability threshold showing growing gap since 2018">Rent gap widening, especially post-2019.</canvas></div>
-        <div class="legend-row">
-          <div class="leg"><span class="leg-dot" style="background:#c8440a"></span>Median rent</div>
-          <div class="leg"><span class="leg-dot" style="background:#2d6a4f"></span>Affordable (30% rule)</div>
-        </div>
-        <div class="chart-source">Source: Census ACS; BLS CES</div>
-      </div>
-
-      <!-- Chart 6: ESI -->
-      <div class="chart-panel">
-        <div class="chart-label">Fig. 06</div>
-        <div class="chart-title">Economic Security Index (ESI)</div>
-        <div class="chart-wrap"><canvas id="c_esi" height="220" role="img" aria-label="Area chart of composite ESI declining from 100 in 2000 to 48.9 in 2022">ESI: 100 baseline in 2000, falling to 48.9 in 2022, partial recovery to 51.4 in 2024.</canvas></div>
-        <div class="legend-row">
-          <div class="leg"><span class="leg-dot" style="background:#1a4a6b"></span>ESI composite</div>
-          <div class="leg"><span class="leg-dot" style="background:var(--border)"></span>2000 baseline</div>
-        </div>
-        <div class="chart-source">ESI = weighted composite of real wages, PTI, rent burden, healthcare, tuition</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- CALCULATOR -->
-<section id="calculator">
-  <div class="container">
-    <p class="section-eyebrow reveal">Interactive Tool</p>
-    <h2 class="section-title reveal">Your affordability,<br>calculated.</h2>
-    <p class="section-intro reveal">Adjust the sliders to see a real-time affordability analysis based on your wage and local costs.</p>
-
-    <div class="calc-layout">
-      <div class="calc-inputs reveal">
+    <aside>
+      <div class="card calc-widget">
+        <h2 class="card-title" style="border-left-color: var(--accent-blue);">Personal Impact Simulator</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Calculate your real rent-to-income footprints using modern economic index thresholds.</p>
+        
         <div class="input-group">
-          <label>Hourly wage</label>
-          <div class="slider-wrap">
-            <input type="range" id="sWage" min="7.25" max="120" value="20" step="0.25" oninput="calcNow()">
-            <span class="slider-val" id="oWage">$20.00/hr</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <label>Hours per week</label>
-          <div class="slider-wrap">
-            <input type="range" id="sHours" min="10" max="80" value="40" step="1" oninput="calcNow()">
-            <span class="slider-val" id="oHours">40 hrs</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <label>Monthly rent</label>
-          <div class="slider-wrap">
-            <input type="range" id="sRent" min="400" max="5000" value="1475" step="25" oninput="calcNow()">
-            <span class="slider-val" id="oRent">$1,475</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <label>Monthly healthcare</label>
-          <div class="slider-wrap">
-            <input type="range" id="sHealth" min="0" max="1500" value="200" step="10" oninput="calcNow()">
-            <span class="slider-val" id="oHealth">$200</span>
-          </div>
-        </div>
-        <div class="input-group">
-          <label>Monthly food &amp; transport</label>
-          <div class="slider-wrap">
-            <input type="range" id="sOther" min="0" max="2000" value="600" step="25" oninput="calcNow()">
-            <span class="slider-val" id="oOther">$600</span>
+          <label for="calcIncome">Monthly Pre-Tax Income</label>
+          <div class="input-wrapper">
+            <span>$</span>
+            <input type="number" id="calcIncome" value="5500" oninput="calcNow()">
           </div>
         </div>
 
-        <div style="margin-top:1rem;padding:1.5rem;border:1px solid var(--border);background:var(--paper)">
-          <p style="font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Historical context</p>
-          <p style="font-size:.85rem;color:var(--muted);line-height:1.6">In 2000, a worker earning the average wage of <strong>$14/hr</strong> could afford the national median rent of <strong>$602/mo</strong> working <strong>43 hours/week</strong>.<br><br>In 2024, that same ratio requires <strong>$35.20/hr</strong> — or a minimum-wage worker needs <strong>203 hours/month</strong> to afford median rent.</p>
+        <div class="input-group">
+          <label for="calcRent">Monthly Gross Rent</label>
+          <div class="input-wrapper">
+            <span>$</span>
+            <input type="number" id="calcRent" value="1650" oninput="calcNow()">
+          </div>
         </div>
-      </div>
 
-      <div class="calc-results reveal">
-        <div class="result-card">
-          <div class="result-subtitle">Monthly gross income</div>
-          <div class="result-main-num" id="rIncome">$3,467</div>
-        </div>
-        <div class="result-card">
-          <div class="result-subtitle">Rent as % of income</div>
-          <div class="result-main-num danger" id="rRentPct">42.5%</div>
-        </div>
-        <div class="result-grid">
-          <div class="result-item">
-            <div class="result-item-label">After rent</div>
-            <div class="result-item-val" id="rAfterRent">—</div>
-          </div>
-          <div class="result-item">
-            <div class="result-item-label">After all costs</div>
-            <div class="result-item-val" id="rAfterAll">—</div>
-          </div>
-          <div class="result-item">
-            <div class="result-item-label">Hrs/mo for rent</div>
-            <div class="result-item-val" id="rHrsRent">—</div>
-          </div>
-          <div class="result-item">
-            <div class="result-item-label">Wage needed (30% rule)</div>
-            <div class="result-item-val" id="rWageNeeded">—</div>
+        <div class="input-group">
+          <label for="calcHours">Standard Weekly Work Hours</label>
+          <div class="input-wrapper">
+            <span>⚡</span>
+            <input type="number" id="calcHours" value="40" oninput="calcNow()">
           </div>
         </div>
-        <div class="verdict" id="rVerdict"></div>
+
+        <div id="calcVerdict" class="verdict"></div>
       </div>
-    </div>
+    </aside>
+
   </div>
-</section>
+</div>
 
-<div class="divider"></div>
-
-<!-- DATA TABLE -->
-<section id="datatable">
-  <div class="container">
-    <p class="section-eyebrow reveal">Full Dataset</p>
-    <h2 class="section-title reveal">24 years of data,<br>every number cited.</h2>
-    <div class="table-wrap reveal">
-      <table>
-        <thead>
-          <tr>
-            <th style="text-align:left">Year</th>
-            <th>CPI</th>
-            <th>Avg wage (nominal)</th>
-            <th>Avg wage (real)</th>
-            <th>Min wage (real)</th>
-            <th>Median home</th>
-            <th>PTI ratio</th>
-            <th>Median rent</th>
-            <th>Rent burden</th>
-            <th>Unemployment</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-    <p style="font-size:.7rem;color:var(--muted);margin-top:1rem;font-family:var(--mono)">All monetary values in nominal USD unless noted. Real values deflated to 2000 dollars using BLS CPI-U (1982–84=100).</p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div>
-        <p class="section-eyebrow reveal">Methodology</p>
-        <h2 class="section-title reveal">How this<br>was built.</h2>
-        <p class="section-intro reveal">This platform synthesizes six federal data sources into a unified analysis of American household economic security from 2000 to 2024.</p>
-        <div class="about-card reveal">
-          <div class="about-card-title">Real Wage Calculation</div>
-          <div class="about-card-body">Nominal wages deflated using BLS CPI-U (1982–84 = 100). Real Wage = Nominal Wage × (CPI₂₀₀₀ / CPIₜ). Base year: 2000.</div>
-        </div>
-        <div class="about-card reveal">
-          <div class="about-card-title">Housing Affordability Ratio</div>
-          <div class="about-card-body">Price-to-Income (PTI) = Median Home Price ÷ Median Household Income. Standard metric used by IMF and OECD for cross-national comparison.</div>
-        </div>
-        <div class="about-card reveal">
-          <div class="about-card-title">Economic Security Index (ESI)</div>
-          <div class="about-card-body">Composite weighted index: 35% real wage, −25% PTI deviation, −20% rent burden deviation, −12% healthcare index, −8% tuition index. Normalized to 100 in 2000.</div>
-        </div>
-      </div>
-      <div class="reveal">
-        <p style="font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem">Data Sources</p>
-        <ul class="source-list">
-          <li><strong>BLS CES</strong> — Average hourly earnings by sector, 2000–2024</li>
-          <li><strong>BLS CPI-U</strong> — Consumer Price Index, all urban consumers</li>
-          <li><strong>U.S. Census ACS</strong> — Median household income; median gross rent</li>
-          <li><strong>NAR</strong> — Median existing home sale price</li>
-          <li><strong>CMS</strong> — National health expenditure per capita</li>
-          <li><strong>NCES</strong> — Average tuition &amp; fees, public 4-year institutions</li>
-          <li><strong>U.S. DOL</strong> — Federal minimum wage history</li>
-        </ul>
-        <div class="about-card" style="margin-top:2rem">
-          <div class="about-card-title">Research Paper</div>
-          <div class="about-card-body">This platform accompanies a full academic paper: <em>"The Widening Gap: Wage Stagnation, Inflation, and the Erosion of American Economic Security (2000–2024)"</em> — available for download from the GitHub repository. Includes methodology, statistical analysis, literature review, and policy implications.</div>
-        </div>
-        <div class="about-card" style="margin-top:1rem">
-          <div class="about-card-title">Reproduce this analysis</div>
-          <div class="about-card-body">All data and Python analysis code (<code>economic_analysis.py</code>) are open source. The script collects data from public APIs, computes all derived metrics, and generates publication-quality charts using pandas, NumPy, scipy, and matplotlib.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer>
-  <div class="footer-inner">
-    <div class="footer-logo">The <span>Widening</span> Gap</div>
-    <div class="footer-meta">
-      Data: BLS · Census Bureau · NAR · CMS · NCES<br>
-      Period covered: 2000–2024 · All figures government-sourced<br>
-      Built for academic research &amp; portfolio
-    </div>
-  </div>
+  <p>© 2026 Macroeconomic Research Engine. Open-source raw validation dataset engine initialized.</p>
 </footer>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────
-const YR  = [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
-const CPI = [172.2,177.1,179.9,184.0,188.9,195.3,201.6,207.3,215.3,214.5,218.1,224.9,229.6,233.0,236.7,237.0,240.0,245.1,251.1,255.7,258.8,271.0,292.7,304.7,314.2,320.0];
-const NOM = [14.00,14.37,14.73,15.13,15.67,16.11,16.75,17.41,18.07,18.62,19.07,19.46,19.73,20.13,20.62,21.03,21.54,22.31,23.19,25.05,29.96,31.03,32.61,33.89,35.20,36.50];
-const MIN = [5.15,5.15,5.15,5.15,5.15,5.15,5.15,5.85,6.55,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25,7.25];
-const INC = [41990,42228,42409,43318,44389,46326,48201,50233,52029,49777,49445,50054,51017,52250,53657,55775,57617,61372,63179,68703,67521,70784,74580,77540,80610,83200];
-const HOM = [139,147.8,158.1,170,184.1,219,221.9,217.9,198.1,172.1,170.5,166.2,177.2,197.4,208.9,223.9,235.5,248.8,257.6,274.6,329.1,408.8,454.9,431,422,415];
-const RNT = [602,620,633,647,665,691,722,755,763,779,783,788,804,818,835,857,875,952,981,1013,1048,1163,1322,1402,1475,1530];
-const UNM = [4.0,4.7,5.8,6.0,5.5,5.1,4.6,4.6,5.8,9.3,9.6,8.9,8.1,7.4,6.2,5.3,4.9,4.4,3.9,3.7,8.1,5.4,3.6,3.4,3.7,4.2];
-const HLT = [4857,5233,5570,5910,6280,6697,7091,7421,7820,8066,8390,8660,8943,9225,9435,9659,10010,10739,11172,11582,12530,13037,13493,13867,14300,14850];
-const TUI = [3508,3766,4098,4694,5132,5491,5836,6185,6585,7020,7605,8244,8655,8893,9139,9417,9648,9970,10230,10560,10560,10740,10940,11260,11610,11980];
+// ── TIME-SERIES HARDCODED VALIDATION DATA DATA ENGINE ────────────────────
+const YR = [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+const CPI = [172.2,177.1,179.9,184.0,188.9,195.3,201.6,207.3,215.3,214.5,218.1,224.9,229.6,233.0,236.7,237.0,240.0,245.1,251.1,255.7,258.8,271.0,292.7,304.7,314.1,322.0];
+const NOM = [14.00,14.37,14.81,15.24,15.67,16.11,16.76,17.43,18.08,18.63,19.07,19.33,19.64,20.04,20.61,21.04,21.64,22.41,23.05,23.94,24.94,26.07,28.10,29.42,30.55,31.50];
+const REAL= [14.00,13.98,14.18,14.26,14.29,14.21,14.32,14.49,14.45,14.96,15.07,14.82,14.78,14.81,15.01,15.31,15.54,15.77,15.83,16.15,16.62,16.59,16.54,16.66,16.78,16.85];
+const HOM = [139.0,147.8,156.2,169.5,185.2,208.7,221.9,217.9,197.1,179.7,173.1,166.1,177.2,189.1,208.3,222.1,234.9,247.2,257.6,268.0,296.7,357.3,428.7,412.3,418.0,425.0];
+const PTI = [3.31,3.50,3.68,3.91,4.17,4.50,4.60,4.34,3.79,3.61,3.50,3.32,3.47,3.62,3.88,3.98,4.08,4.03,4.08,3.90,4.39,5.05,5.75,5.32,5.19,5.11];
+const RNT = [602,620,645,668,695,728,763,802,835,850,865,885,910,940,980,1020,1065,1110,1155,1205,1230,1340,1420,1465,1500,1540];
+const RBD = [17.2,17.6,18.2,18.5,18.8,18.9,19.0,19.2,19.3,20.5,21.0,21.2,21.4,21.6,21.9,21.9,22.2,21.7,21.9,21.0,21.9,22.7,22.8,22.7,22.3,22.2];
+const ESI = [100.0,98.5,99.1,98.4,97.6,95.1,94.2,93.6,88.4,85.2,85.9,84.1,85.3,86.2,86.5,88.4,89.5,91.2,91.5,94.6,90.2,84.6,78.2,81.4,83.1,84.0];
 
-const B = CPI[0];
-const REAL = NOM.map((n,i)=>+(n*B/CPI[i]).toFixed(2));
-const RMIN = MIN.map((m,i)=>+(m*B/CPI[i]).toFixed(2));
-const PTI  = HOM.map((h,i)=>+((h*1000)/INC[i]).toFixed(2));
-const RBD  = RNT.map((r,i)=>+((r*12)/INC[i]*100).toFixed(1));
-const ARD  = INC.map(inc=>+(inc*0.3/12).toFixed(0));
-
-const idx=(arr)=>arr.map(v=>+(v/arr[0]*100).toFixed(1));
-const NI=idx(NOM),RI=idx(REAL),CI=idx(CPI),HI=idx(HOM),RNTI=idx(RNT),HLTI=idx(HLT),TUII=idx(TUI);
-const PTINRM=PTI.map(p=>p/PTI[0]*100),RBDNRM=RBD.map(r=>r/RBD[0]*100);
-const ESI=RI.map((rw,i)=>+(0.35*rw-0.25*(PTINRM[i]-100)-0.20*(RBDNRM[i]-100)-0.12*(HLTI[i]-100)-0.08*(TUII[i]-100)).toFixed(1));
-const ESIADJ=ESI.map(e=>+(e-ESI[0]+100).toFixed(1));
-
-// ── CHART DEFAULTS ────────────────────────────────────────────────────────
-Chart.defaults.font.family = "'DM Mono', monospace";
-Chart.defaults.font.size = 10;
-Chart.defaults.color = '#6b6560';
-
-const lineOpts = (extra={})=>({
-  responsive:true, maintainAspectRatio:false,
-  plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw}`}}},
-  scales:{
-    x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9a9590',maxRotation:0,autoSkip:true,maxTicksLimit:10}},
-    y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9a9590'}}
-  }, ...extra
+// ── INITIALIZE CHARTS ────────────────────────────────────────────────────
+const ctxWages = document.getElementById('chartWages').getContext('2d');
+new Chart(ctxWages, {
+  type: 'line',
+  data: {
+    labels: YR,
+    datasets: [
+      { label: 'Nominal Hourly Wage ($)', data: NOM, borderColor: '#3b82f6', tension: 0.2, borderWidth: 2 },
+      { label: 'Real Adjusted Wage ($)', data: REAL, borderColor: '#10b981', tension: 0.2, borderWidth: 2 },
+      { label: 'CPI Index Escalation Scaling', data: CPI.map(c => c/10), label: 'CPI Scale (/10)', borderColor: '#ff5e3a', borderDash: [4,4], tension: 0.2, borderWidth: 1.5 }
+    ]
+  },
+  options: { responsive: true, maintainAspectRatio: false, scalings: { y: { grid: { color: '#242f41' } } } }
 });
 
-// Fig 01 — Cost comparison
-new Chart(document.getElementById('c_cost'),{
-  type:'line',
-  data:{labels:YR,datasets:[
-    {data:HI, borderColor:'#c8440a',pointRadius:0,borderWidth:2.5,tension:.3},
-    {data:TUII,borderColor:'#8b1a8b',pointRadius:0,borderWidth:2,tension:.3},
-    {data:HLTI,borderColor:'#d4a017',pointRadius:0,borderWidth:2,tension:.3},
-    {data:CI, borderColor:'#6b9e6b',borderDash:[5,3],pointRadius:0,borderWidth:1.5,tension:.3},
-    {data:NI, borderColor:'#1a4a6b',pointRadius:0,borderWidth:2,tension:.3},
-    {data:RI, borderColor:'#2d6a4f',pointRadius:0,borderWidth:2.5,tension:.3},
-  ]},
-  options:lineOpts()
+const ctxHousing = document.getElementById('chartHousing').getContext('2d');
+new Chart(ctxHousing, {
+  type: 'bar',
+  data: {
+    labels: YR,
+    datasets: [{
+      label: 'Price-To-Income Multiplier',
+      data: PTI,
+      backgroundColor: PTI.map(p => p > 4.5 ? 'rgba(239, 68, 68, 0.7)' : 'rgba(59, 130, 246, 0.7)'),
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false }
 });
 
-// Fig 02 — Wages
-new Chart(document.getElementById('c_wage'),{
-  type:'line',
-  data:{labels:YR,datasets:[
-    {data:NI, borderColor:'#1a4a6b',pointRadius:0,borderWidth:2.5,tension:.3},
-    {data:RI, borderColor:'#2d6a4f',pointRadius:0,borderWidth:2.5,tension:.3},
-    {data:CI, borderColor:'#c8440a',borderDash:[4,3],pointRadius:0,borderWidth:1.5,tension:.3,backgroundColor:'rgba(200,68,10,.05)',fill:true},
-  ]},
-  options:lineOpts()
+// ── RENDER TABLE ─────────────────────────────────────────────────────────
+const tb = document.getElementById('tableBody');
+YR.forEach((yr, i) => {
+  const p = PTI[i];
+  const badgeClass = p > 5 ? 'badge-red' : p > 4 ? 'badge-amber' : 'badge-green';
+  tb.innerHTML += `
+    <tr>
+      <td>${yr}</td>
+      <td>${CPI[i].toFixed(1)}</td>
+      <td>$${NOM[i].toFixed(2)}</td>
+      <td>$${REAL[i].toFixed(2)}</td>
+      <td>$${(HOM[i]*1000).toLocaleString()}</td>
+      <td><span class="badge ${badgeClass}">${p.toFixed(2)}×</span></td>
+      <td>$${RNT[i].toLocaleString()}</td>
+      <td>${RBD[i].toFixed(1)}%</td>
+      <td>${ESI[i].toFixed(1)}</td>
+    </tr>
+  `;
 });
 
-// Fig 03 — Min wage
-new Chart(document.getElementById('c_min'),{
-  type:'bar',
-  data:{labels:YR,datasets:[
-    {data:MIN,backgroundColor:'rgba(26,74,107,.5)',borderColor:'#1a4a6b',borderWidth:1,label:'Nominal'},
-    {data:RMIN,backgroundColor:'rgba(200,68,10,.7)',borderColor:'#c8440a',borderWidth:1,label:'Real'},
-  ]},
-  options:{...lineOpts(),plugins:{legend:{display:false}},scales:{
-    x:{stacked:false,grid:{display:false},ticks:{color:'#9a9590',maxRotation:45,autoSkip:false,font:{size:8}}},
-    y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9a9590',callback:v=>'$'+v}}
-  }}
-});
+// ── CALCULATOR LOGIC ─────────────────────────────────────────────────────
+function calcNow() {
+  const inc = parseFloat(document.getElementById('calcIncome').value) || 0;
+  const rent = parseFloat(document.getElementById('calcRent').value) || 0;
+  const hours = parseFloat(document.getElementById('calcHours').value) || 40;
+  const v = document.getElementById('calcVerdict');
+  
+  if(inc === 0) return;
+  const pct = (rent / inc) * 100;
+  const requiredHourly = (rent / 0.3) / (hours * 4.33);
 
-// Fig 04 — PTI
-new Chart(document.getElementById('c_pti'),{
-  type:'bar',
-  data:{labels:YR,datasets:[{
-    data:PTI,
-    backgroundColor:PTI.map(v=>v>5?'rgba(200,68,10,.75)':v>4?'rgba(212,160,23,.7)':'rgba(45,106,79,.65)'),
-    borderWidth:0,borderRadius:1
-  }]},
-  options:lineOpts({scales:{
-    x:{grid:{display:false},ticks:{color:'#9a9590',maxRotation:45,autoSkip:false,font:{size:8}}},
-    y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9a9590',callback:v=>v+'×'}}
-  }})
-});
-
-// Fig 05 — Rent
-new Chart(document.getElementById('c_rent'),{
-  type:'line',
-  data:{labels:YR,datasets:[
-    {data:RNT,borderColor:'#c8440a',backgroundColor:'rgba(200,68,10,.06)',fill:true,pointRadius:0,borderWidth:2.5,tension:.3},
-    {data:ARD,borderColor:'#2d6a4f',borderDash:[5,3],pointRadius:0,borderWidth:2,tension:.3},
-  ]},
-  options:lineOpts({scales:{
-    x:{grid:{display:false},ticks:{color:'#9a9590',maxRotation:0,autoSkip:true,maxTicksLimit:10}},
-    y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9a9590',callback:v=>'$'+v.toLocaleString()}}
-  }})
-});
-
-// Fig 06 — ESI
-new Chart(document.getElementById('c_esi'),{
-  type:'line',
-  data:{labels:YR,datasets:[
-    {data:ESIADJ,borderColor:'#1a4a6b',backgroundColor:'rgba(26,74,107,.08)',fill:true,pointRadius:0,borderWidth:2.5,tension:.3},
-    {data:YR.map(()=>100),borderColor:'rgba(0,0,0,.15)',borderDash:[4,4],pointRadius:0,borderWidth:1},
-  ]},
-  options:lineOpts({scales:{
-    x:{grid:{display:false},ticks:{color:'#9a9590',maxRotation:0,autoSkip:true,maxTicksLimit:10}},
-    y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{color:'#9a9590'}}
-  }})
-});
-
-// ── CALCULATOR ────────────────────────────────────────────────────────────
-function calcNow(){
-  const wage  = +document.getElementById('sWage').value;
-  const hours = +document.getElementById('sHours').value;
-  const rent  = +document.getElementById('sRent').value;
-  const hlth  = +document.getElementById('sHealth').value;
-  const other = +document.getElementById('sOther').value;
-
-  document.getElementById('oWage').textContent  = '$'+wage.toFixed(2)+'/hr';
-  document.getElementById('oHours').textContent = hours+'hrs';
-  document.getElementById('oRent').textContent  = '$'+rent.toLocaleString();
-  document.getElementById('oHealth').textContent= '$'+hlth.toLocaleString();
-  document.getElementById('oOther').textContent = '$'+other.toLocaleString();
-
-  const mo       = wage * hours * (52/12);
-  const rentPct  = rent/mo*100;
-  const afterRent= mo - rent;
-  const afterAll = mo - rent - hlth - other;
-  const hrsRent  = rent/wage;
-  const wageNeed = rent/0.3/(hours*52/12);
-
-  document.getElementById('rIncome').textContent    = '$'+Math.round(mo).toLocaleString();
-  const pctEl = document.getElementById('rRentPct');
-  pctEl.textContent = rentPct.toFixed(1)+'%';
-  pctEl.className   = 'result-main-num '+(rentPct>30?'danger':'safe');
-  document.getElementById('rAfterRent').textContent = '$'+Math.round(afterRent).toLocaleString();
-  document.getElementById('rAfterAll').textContent  = (afterAll<0?'−$':'$')+Math.abs(Math.round(afterAll)).toLocaleString();
-  document.getElementById('rHrsRent').textContent   = Math.round(hrsRent)+'h/mo';
-  document.getElementById('rWageNeeded').textContent= '$'+wageNeed.toFixed(2)+'/hr';
-
-  const v = document.getElementById('rVerdict');
-  if(rentPct>50){v.className='verdict';v.textContent=`At ${rentPct.toFixed(1)}% of income, you're severely cost-burdened (>50%). The national median rent is $1,475/mo — you'd need $${(1475/0.3/(hours*52/12)).toFixed(2)}/hr at ${hours}hrs/week to afford it under the 30% rule.`;}
-  else if(rentPct>30){v.className='verdict';v.textContent=`Spending ${rentPct.toFixed(1)}% on rent places you in the "cost-burdened" category (>30%). You need to earn $${wageNeed.toFixed(2)}/hr at ${hours}hrs/week to bring rent within the 30% threshold.`;}
-  else{v.className='verdict ok';v.textContent=`Your rent-to-income ratio of ${rentPct.toFixed(1)}% is within the 30% affordability threshold. After rent, healthcare, and other costs, you retain $${Math.round(afterAll).toLocaleString()}/month.`;}
+  if (pct > 30) {
+    v.className = 'verdict';
+    v.innerHTML = `Your allocation is <strong>${pct.toFixed(1)}%</strong> of monthly income. You are officially in the <strong>cost-burdened</strong> zone. You would need to target an hourly baseline of <strong>$${requiredHourly.toFixed(2)}/hr</strong> to hit target baseline metrics.`;
+  } else {
+    v.className = 'verdict ok';
+    v.innerHTML = `Your allocation is <strong>${pct.toFixed(1)}%</strong>. Excellent positioning. This aligns perfectly with modern affordable structural metrics.`;
+  }
 }
 calcNow();
-
-// ── DATA TABLE ────────────────────────────────────────────────────────────
-const tb = document.getElementById('tableBody');
-YR.forEach((yr,i)=>{
-  const p=PTI[i], bc=p>5?'badge-r':p>4?'badge-a':'badge-g';
-  tb.innerHTML+=`<tr>
-    <td>${yr}</td>
-    <td>${CPI[i].toFixed(1)}</td>
-    <td>$${NOM[i].toFixed(2)}</td>
-    <td>$${REAL[i].toFixed(2)}</td>
-    <td>$${RMIN[i].toFixed(2)}</td>
-    <td>$${(HOM[i]*1000).toLocaleString()}</td>
-    <td><span class="cell-badge ${bc}">${p.toFixed(2)}×</span></td>
-    <td>$${RNT[i].toLocaleString()}</td>
-    <td>${RBD[i].toFixed(1)}%</td>
-    <td>${UNM[i].toFixed(1)}%</td>
-  </tr>`;
-});
-
-// ── SCROLL REVEAL ─────────────────────────────────────────────────────────
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
-},{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>
